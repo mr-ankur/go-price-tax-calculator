@@ -5,3 +5,10 @@ type TaxIncludedPriceJob struct {
 	InputPrices       []float64
 	TaxIncludedPrices map[string]float64
 }
+
+func NewTaxIncludedPriceJob(taxRate float64) *TaxIncludedPriceJob {
+	return &TaxIncludedPriceJob{
+		InputPrices: []float64{10, 40, 91},
+		TaxRate:     taxRate,
+	}
+}
