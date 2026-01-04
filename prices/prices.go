@@ -32,14 +32,16 @@ func (job *TaxIncludedPriceJob) LoadData() {
 
 func (job *TaxIncludedPriceJob) Process() {
 	job.LoadData()
-	result := make(map[string]string)
+	result := make(map[string]float64)
 
 	for _, price := range job.InputPrices {
 		taxIncludedPrice := price * (1 + job.TaxRate)
-		result[fmt.Sprintf("%.2f", price)] = fmt.Sprintf("%.2f", taxIncludedPrice)
+		result[fmt.Sprintf("%.2f", price)] = taxIncludedPrice
 	}
 
-	fmt.Println(result)
+	job.TaxIncludedPrices = result
+
+	filemanager.WriteJSON(fmt.Sprintf("result_%0.f.json", job.TaxRate*100), job)
 }
 
 func NewTaxIncludedPriceJob(taxRate float64) *TaxIncludedPriceJob {
