@@ -21,17 +21,16 @@ func main() {
 		// priceJob := prices.NewTaxIncludedPriceJob(cmdm, taxRate)
 		priceJob := prices.NewTaxIncludedPriceJob(fm, taxRate)
 		go priceJob.Process(doneChans[index], errChans[index])
-		// if err != nil {
-		// 	fmt.Println("Cound not process job")
-		// 	fmt.Println(err)
-		// }
 	}
 
-	for _, errChan := range errChans {
-		<-errChan
-	}
-
-	for _, doneChan := range doneChans {
-		<-doneChan
+	for index := range taxRates {
+		select {
+		case err := <-errChans[index]:
+			if err != nil {
+				fmt.Println(err)
+			}
+		case <-doneChans[index]:
+			fmt.Println("Done!")
+		}
 	}
 }
